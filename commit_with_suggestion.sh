@@ -1,9 +1,10 @@
 #!/bin/sh
 
-IFS=$'\n' read -d '' -r -a changed_files < <(git diff --cached --name-only)
+
+IFS=$'\n' read -d '' -r -a changed_files <<< "$(git diff --cached --name-only)"
 
 if [ ${#changed_files[@]} -gt 0 ]; then
-  commit_message=$(python3 /path/to/gpt_commit_message.py "${changed_files[@]}")
+  commit_message=$(python3 gpt_commit_message.py "${changed_files[@]}")
 
   if [ -n "$commit_message" ]; then
       echo "Suggested commit message: $commit_message"

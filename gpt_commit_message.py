@@ -12,13 +12,19 @@ def generate_summary(file_path):
     output = subprocess.run(['git', 'diff', '--cached', file_path], capture_output=True, text=True)
 
     # Extract added/modified lines from git diff
-    changes = []
+    added_lines = []
     for line in output.stdout.split('\n'):
         if line.startswith('+') and not line.startswith('+++'):
-            changes.append(line[1:])
+            added_lines.append(line[1:])
+
+    # Extract deleted lines from git diff
+    deleted_lines = []
+    for line in output.stdout.split('\n'):
+        if line.startswith('-') and not line.startswith('---'):
+            deleted_lines.append(line[1:])
 
     # Combine changes to form summary
-    summary = '\n'.join(changes[:3])  # Use first 3 lines as summary
+    summary = '\n'.join(added_lines[:3] + deleted_lines[:3])  # Use first 3 lines as summary
     return summary
 
 def generate_commit_message(file_paths):
