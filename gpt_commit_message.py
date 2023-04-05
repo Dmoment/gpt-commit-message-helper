@@ -11,21 +11,30 @@ def generate_summary(file_path):
     # Get git diff of the file
     output = subprocess.run(['git', 'diff', '--cached', file_path], capture_output=True, text=True)
 
-    # Extract added/modified lines from git diff
+    # Extract added/modified/deleted lines from git diff
     added_lines = []
+    modified_lines = []
+    deleted_lines = []
     for line in output.stdout.split('\n'):
         if line.startswith('+') and not line.startswith('+++'):
             added_lines.append(line[1:])
+        elif line.startswith('-') and not line.startswith('---'):
+            deleted_lines.append('Removed ' + line[1:])
+        elif line.startswith(' ') and not line.startswith('@@'):
+            modified_lines.append(line[1:])
 
-    # Extract deleted lines from git diff
-    deleted_lines = []
-    for line in output.stdout.split('\n'):
-        if line.startswith('-') and not line.startswith('---'):
-            deleted_lines.append(line[1:])
-
-    # Combine changes to form summary
-    summary = '\n'.join(added_lines[:3] + deleted_lines[:3])  # Use first 3 lines as summary
-    return summary
+    # Combine added/modified/deleted lines to form summary
+    added_summary = '\n'.join(added_lines[:3])  # Use first 3 lines as added summary
+    modified_summary = '\n'.join(modified_lines[:3])  # Use first 3 lines as modified summary
+    deleted_summary = '\n'.join(deleted_lines[:3])  # Use first 3 lines as deleted summary
+    summary = ''
+    if added_summary:
+        summary += f'Added:\n{added_summary}\n\n'
+    if modified_summary:
+        summary += f'Modified:\n{modified_summary}\n\n'
+    if deleted_summary:
+        summary += f'Deleted:\n{deleted_summary}\n\n'
+    return summary.strip()
 
 def generate_commit_message(file_paths):
     prompts = []
