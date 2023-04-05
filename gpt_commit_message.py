@@ -1,17 +1,24 @@
 import openai
 import os
 import sys
+import subprocess
 from requests.exceptions import RequestException
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 
 def generate_summary(file_path):
-    with open(file_path, 'r') as f:
-        contents = f.read()
+    # Get git diff of the file
+    output = subprocess.run(['git', 'diff', '--cached', file_path], capture_output=True, text=True)
 
-    # Extract summary from contents
-    summary = contents.split('\n')[0]
+    # Extract added/modified lines from git diff
+    changes = []
+    for line in output.stdout.split('\n'):
+        if line.startswith('+') and not line.startswith('+++'):
+            changes.append(line[1:])
+
+    # Combine changes to form summary
+    summary = '\n'.join(changes[:3])  # Use first 3 lines as summary
     return summary
 
 def generate_commit_message(file_paths):
@@ -45,6 +52,6 @@ def generate_commit_message(file_paths):
 
 
 if __name__ == "__main__":
-    changes = sys.argv[1]
-    commit_message = generate_commit_message(changes)
+    file_paths = sys.argv[1:]
+    commit_message = generate_commit_message(file_paths)
     print(commit_message)
