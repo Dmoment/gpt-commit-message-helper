@@ -6,6 +6,12 @@ from requests.exceptions import RequestException
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
+# Set default values for environment variables
+openai_engine = os.getenv("OPENAI_ENGINE", "text-davinci-002")
+openai_max_tokens = int(os.getenv("OPENAI_MAX_TOKENS", "60"))
+openai_temperature = float(os.getenv("OPENAI_TEMPERATURE", "0.7"))
+openai_stop = os.getenv("OPENAI_STOP", None)
+
 
 def generate_summary(file_path):
     # Get git diff of the file
@@ -48,12 +54,12 @@ def generate_commit_message(file_paths):
 
     try:
         response = openai.Completion.create(
-            engine="text-davinci-002",
+            engine=openai_engine,
             prompt=f"Generate a commit message for the following changes in a software project:\n\n{prompt_text}\n\nCommit message: ",
-            max_tokens=60,
+            max_tokens=openai_max_tokens,
             n=1,
-            stop=None,
-            temperature=0.7,
+            stop=openai_stop,
+            temperature=openai_temperature,
         )
 
         message = response.choices[0].text.strip()
