@@ -53,6 +53,15 @@ git add .
 git scommit
 ```
 
+### Customization
+
+You can customize the behavior of the script using the following environment variables:
+
+- `GPT_COMMIT_MESSAGE_MODEL`: The OpenAI language model to use for generating commit messages. The default value is `text-davinci-002`.
+- `GPT_COMMIT_MESSAGE_MAX_TOKENS`: The maximum number of tokens to generate in the commit message. The default value is `60`.
+- `GPT_COMMIT_MESSAGE_TEMPERATURE`: The sampling temperature to use when generating the commit message. The default value is `0.7`.
+- `GPT_COMMIT_MESSAGE_STOP`: A string or list of strings to use as stop words when generating the commit message. The default value is `None`.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
