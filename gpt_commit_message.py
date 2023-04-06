@@ -49,7 +49,7 @@ def generate_commit_message(file_paths):
     try:
         response = openai.Completion.create(
             engine="text-davinci-002",
-            prompt=f"Generate a commit message for the following changes:\n{prompt_text}",
+            prompt=f"Generate a commit message for the following changes in a software project:\n\n{prompt_text}\n\nCommit message: ",
             max_tokens=60,
             n=1,
             stop=None,
