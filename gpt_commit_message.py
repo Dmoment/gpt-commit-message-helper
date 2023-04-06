@@ -24,9 +24,9 @@ def generate_summary(file_path):
             modified_lines.append(line[1:])
 
     # Combine added/modified/deleted lines to form summary
-    added_summary = '\n'.join(added_lines[:3])  # Use first 3 lines as added summary
-    modified_summary = '\n'.join(modified_lines[:3])  # Use first 3 lines as modified summary
-    deleted_summary = '\n'.join(deleted_lines[:3])  # Use first 3 lines as deleted summary
+    added_summary = '\n'.join(added_lines)
+    modified_summary = '\n'.join(modified_lines)
+    deleted_summary = '\n'.join(deleted_lines)
     summary = ''
     if added_summary:
         summary += f'Added:\n{added_summary}\n\n'
